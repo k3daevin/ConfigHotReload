@@ -1,0 +1,16 @@
+﻿@using ConfigHotReload.Shared
+<h3>FeatureConfigComponent</h3>
+
+@if (FeatureConfig != null)
+{
+    <div>
+        <p>Text: {@FeatureConfig.Text}</p>
+        <p>MaxV: {@FeatureConfig.MaxValue}</p>
+        <p>Flag: {@FeatureConfig.Experimental}</p>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public FeatureConfig FeatureConfig { get; set; }
+}

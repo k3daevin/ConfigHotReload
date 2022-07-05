@@ -1,0 +1,48 @@
+﻿@page "/"
+@using ConfigHotReload.Shared
+@using Microsoft.AspNetCore.SignalR.Client
+@implements IAsyncDisposable
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
+<PageTitle>Index</PageTitle>
+
+@if (_featureConfig != null)
+{
+    <div>
+        <p>Text: {@_featureConfig.Text}</p>
+        <p>MaxV: {@_featureConfig.MaxValue}</p>
+        <p>Flag: {@_featureConfig.Experimental}</p>
+    </div>
+}
+
+@code {
+    private FeatureConfig? _featureConfig;
+    private HubConnection? hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _featureConfig = await HttpClient.GetFromJsonAsync<FeatureConfig>("/api/feature");
+
+
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/featureconfighub"))
+            .Build();
+
+        hubConnection.On<FeatureConfig>("GetFeatureConfig", f =>
+        {
+            _featureConfig = f;
+            InvokeAsync(StateHasChanged);
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}
