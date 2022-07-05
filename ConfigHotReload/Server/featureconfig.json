@@ -1,7 +1,7 @@
 {
   "FeatureConfig": {
-    "Text": "Ich bin ein Text?",
-    "MaxValue": 1311,
+    "Text": "Ich bin ein Text!",
+    "MaxValue": 131199,
     "Experimental": true
   }
 }
